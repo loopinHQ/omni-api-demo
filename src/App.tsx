@@ -1,25 +1,27 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { ComponentType, ReactElement } from "react";
+import { ApolloProvider } from "react-apollo";
+import { useParams } from "react-router-dom";
+import "./App.css";
+import createApolloClient from "./api/Apollo";
 
-function App() {
+interface AppProps {
+  contentComponent: ComponentType<any>;
+}
+
+function App({ contentComponent: ContentComponent }: AppProps): ReactElement {
+  const client = createApolloClient();
+  const { id } = useParams();
+
+  const props = id ? { id } : {};
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ApolloProvider client={client}>
+      <div className="App">
+        <header className="App-header">
+          <ContentComponent {...props} />
+        </header>
+      </div>
+    </ApolloProvider>
   );
 }
 
